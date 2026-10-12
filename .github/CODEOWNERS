@@ -1,0 +1,5 @@
+# Todo cambio requiere revisión del equipo core
+* @umbraltechdev/core
+
+# Pipelines y configuración del repo: solo core
+/.github/ @umbraltechdev/core

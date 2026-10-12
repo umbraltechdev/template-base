@@ -1,0 +1,34 @@
+name: PR checks
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  pr-title:
+    name: Conventional Commits en el título
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  branch-name:
+    name: Nombre de rama Gitflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar rama origen y destino
+        env:
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          echo "PR: $HEAD -> $BASE"
+          case "$BASE" in
+            main)
+              [[ "$HEAD" =~ ^(release|hotfix)/.+ ]] || { echo "A main solo entran release/* o hotfix/*"; exit 1; } ;;
+            develop)
+              [[ "$HEAD" =~ ^(feature|bugfix|release|hotfix)/.+ ]] || { echo "A develop entran feature/*, bugfix/*, release/* o hotfix/*"; exit 1; } ;;
+          esac
